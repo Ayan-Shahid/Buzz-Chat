@@ -1,6 +1,23 @@
+import 'package:buzzchat/components/attachment_button.dart';
+import 'package:buzzchat/components/chat_bubble.dart';
+import 'package:buzzchat/components/chat_input.dart';
+import 'package:buzzchat/components/send_message_button.dart';
+import 'package:buzzchat/enums/message.dart';
+import 'package:buzzchat/firebase_options.dart';
+import 'package:buzzchat/theme/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() {
+extension MediaQuerySize on BuildContext {
+  Size get screen => MediaQuery.of(this).size;
+}
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
   runApp(const MyApp());
 }
 
@@ -10,34 +27,21 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+    return ChangeNotifierProvider<BuzzChatTheme>(
+      create: (context) => BuzzChatTheme(),
+      builder: (context, child) => MaterialApp(
+        title: 'Flutter Demo',
+        theme: BuzzChatTheme.light,
+        darkTheme: BuzzChatTheme.dark,
+        themeMode: context.watch<BuzzChatTheme>().themeMode,
+        home: const Chat(),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+class Chat extends StatefulWidget {
+  const Chat({super.key});
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -48,78 +52,144 @@ class MyHomePage extends StatefulWidget {
   // used by the build method of the State. Fields in a Widget subclass are
   // always marked "final".
 
-  final String title;
-
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<Chat> createState() => _ChatState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
-
+class _ChatState extends State<Chat> {
+  List<Map<String, String>> messages = [
+    {"from": "User1", "message": "Hello", "type": "text"},
+    {"from": "User2", "message": "Hello", "type": "text"},
+    {"from": "User1", "message": "", "type": "image"},
+    {"from": "User1", "message": "", "type": "voice"},
+  ];
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
+    double width = MediaQuery.of(context).size.width;
+
+    BuzzChatPaletteExtension palette = context.theme.palette;
+    ThemeData theme = context.theme;
     return Scaffold(
+      backgroundColor: palette.background,
       appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
+        actions: [
+          IconButton(onPressed: () {}, icon: Icon(Icons.videocam_outlined)),
+          IconButton(onPressed: () {}, icon: Icon(Icons.phone_outlined)),
+          IconButton(onPressed: () {}, icon: Icon(Icons.more_vert_rounded)),
+        ],
+        centerTitle: false,
+        titleSpacing: 0,
+        flexibleSpace: Container(
+          color: palette.container,
+        ),
+        title: Row(
+          children: [
+            CircleAvatar(
+              backgroundColor: palette.inverseContainer,
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+            const SizedBox(
+              width: 16,
             ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "User 1",
+                  style: TextStyle(
+                      fontSize: theme.textTheme.titleMedium?.fontSize,
+                      fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(
+                  height: 2,
+                ),
+                Text(
+                  "Online",
+                  style: TextStyle(
+                      fontSize: theme.textTheme.bodySmall?.fontSize,
+                      fontWeight: FontWeight.w600),
+                )
+              ],
+            )
           ],
         ),
+        backgroundColor: palette.container,
+        shape: Border(bottom: BorderSide(color: palette.inverseContainer)),
+        foregroundColor: palette.foreground,
+        leading: IconButton(
+            onPressed: () {}, icon: const Icon(Icons.arrow_back_rounded)),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      body: SafeArea(
+          child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        child: Column(
+          children: [
+            const SizedBox(
+              height: 24,
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    height: 2,
+                    decoration: ShapeDecoration(
+                        shape: const StadiumBorder(), color: palette.container),
+                  ),
+                ),
+                const SizedBox(
+                  width: 12,
+                ),
+                Text(
+                  "6:32 AM",
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: theme.textTheme.labelSmall?.fontSize,
+                      color: palette.containerVariant),
+                ),
+                const SizedBox(
+                  width: 12,
+                ),
+                Expanded(
+                  child: Container(
+                    height: 2,
+                    decoration: ShapeDecoration(
+                        shape: const StadiumBorder(), color: palette.container),
+                  ),
+                )
+              ],
+            ),
+            const SizedBox(
+              height: 24,
+            ),
+            Expanded(
+              child: ListView.builder(
+                itemBuilder: (context, index) {
+                  return ChatBubble(
+                      userId: messages[index]["from"]!,
+                      type: messages[index]["type"] == "text"
+                          ? MessageType.text
+                          : MessageType.image);
+                },
+                itemCount: messages.length,
+                shrinkWrap: true,
+              ),
+            ),
+            const Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                AttachmentButton(),
+                SizedBox(
+                  width: 8,
+                ),
+                ChatInput(),
+                SizedBox(
+                  width: 8,
+                ),
+                SendMessageButton()
+              ],
+            )
+          ],
+        ),
+      )),
     );
   }
 }
