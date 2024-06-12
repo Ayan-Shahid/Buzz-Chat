@@ -62,6 +62,15 @@ class _ChatState extends State<Chat> {
     {"from": "User2", "message": "Hello", "type": "text"},
     {"from": "User1", "message": "", "type": "image"},
     {"from": "User1", "message": "", "type": "voice"},
+    {"from": "User1", "message": "", "type": "voice"},
+    {"from": "User1", "message": "", "type": "voice"},
+    {"from": "User1", "message": "", "type": "voice"},
+    {"from": "User1", "message": "", "type": "voice"},
+    {"from": "User1", "message": "", "type": "voice"},
+    {"from": "User1", "message": "", "type": "voice"},
+    {"from": "User1", "message": "", "type": "voice"},
+    {"from": "User1", "message": "", "type": "voice"},
+    {"from": "User1", "message": "", "type": "voice"},
   ];
   @override
   Widget build(BuildContext context) {
@@ -118,6 +127,7 @@ class _ChatState extends State<Chat> {
         leading: IconButton(
             onPressed: () {}, icon: const Icon(Icons.arrow_back_rounded)),
       ),
+      resizeToAvoidBottomInset: true,
       body: SafeArea(
           child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -173,6 +183,9 @@ class _ChatState extends State<Chat> {
                 shrinkWrap: true,
               ),
             ),
+            const SizedBox(
+              height: 8,
+            ),
             const Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
@@ -186,7 +199,10 @@ class _ChatState extends State<Chat> {
                 ),
                 SendMessageButton()
               ],
-            )
+            ),
+            const SizedBox(
+              height: 4,
+            ),
           ],
         ),
       )),

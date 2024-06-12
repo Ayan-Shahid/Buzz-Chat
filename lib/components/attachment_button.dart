@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:buzzchat/main.dart';
+import 'package:buzzchat/screens/attachment/document.dart';
 import 'package:buzzchat/theme/theme.dart';
 import 'package:flutter/material.dart';
 
@@ -20,7 +21,9 @@ class _AttachmentButtonState extends State<AttachmentButton> {
         "icon": Icons.feed_rounded,
         "name": "Document",
         "background": palette.error,
-        "foreground": palette.onError
+        "foreground": palette.onError,
+        "on-pressed": () => Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => Document()))
       },
       {
         "icon": Icons.camera_alt_rounded,
@@ -37,26 +40,26 @@ class _AttachmentButtonState extends State<AttachmentButton> {
       {
         "icon": Icons.headphones_rounded,
         "name": "Audio",
-        "background": palette.error,
-        "foreground": palette.onError
+        "background": palette.success,
+        "foreground": palette.onSuccess
       },
       {
         "icon": Icons.location_on_rounded,
         "name": "Location",
-        "background": palette.primary,
-        "foreground": palette.onPrimary
+        "background": palette.warning,
+        "foreground": palette.onWarning
       },
       {
         "icon": Icons.person,
         "name": "Contact",
-        "background": palette.background,
-        "foreground": palette.foreground
+        "background": palette.secondary,
+        "foreground": palette.onSecondary
       },
       {
         "icon": Icons.poll_rounded,
         "name": "Poll",
-        "background": palette.error,
-        "foreground": palette.onError
+        "background": palette.foreground,
+        "foreground": palette.background
       },
     ];
   }
@@ -96,9 +99,8 @@ class _AttachmentButtonState extends State<AttachmentButton> {
                                   ["background"],
                               foregroundColor: actions(palette)[index]
                                   ["foreground"]),
-                          onPressed: () {
-                            print("object");
-                          },
+                          onPressed:
+                              actions(palette)[index]["on-pressed"] ?? () => {},
                           icon: Icon(
                             actions(palette)[index]["icon"],
                             size: theme.textTheme.titleLarge?.fontSize,

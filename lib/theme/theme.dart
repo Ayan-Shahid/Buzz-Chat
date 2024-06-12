@@ -112,7 +112,9 @@ class BuzzChatPaletteExtension
       required this.success,
       required this.onSuccess,
       required this.warning,
-      required this.onWarning});
+      required this.onWarning,
+      required this.secondary,
+      required this.onSecondary});
   final Color background;
   final Color foreground;
   final Color containerVariant;
@@ -134,6 +136,8 @@ class BuzzChatPaletteExtension
   final Color success;
   final Color onSuccess;
   final Color warning;
+  final Color secondary;
+  final Color onSecondary;
   final Color onWarning;
 
   @override
@@ -160,8 +164,12 @@ class BuzzChatPaletteExtension
       Color? success,
       Color? onSuccess,
       Color? warning,
-      Color? onWarning}) {
+      Color? onWarning,
+      Color? secondary,
+      Color? onSecondary}) {
     return BuzzChatPaletteExtension(
+        secondary: secondary ?? this.secondary,
+        onSecondary: onSecondary ?? this.onSecondary,
         success: success ?? this.success,
         onSuccess: onSuccess ?? this.onSuccess,
         warning: warning ?? this.warning,
@@ -198,6 +206,8 @@ class BuzzChatPaletteExtension
       return this;
     }
     return BuzzChatPaletteExtension(
+        secondary: Color.lerp(secondary, other.secondary, t)!,
+        onSecondary: Color.lerp(onSecondary, other.onSecondary, t)!,
         success: Color.lerp(success, other.success, t)!,
         onSuccess: Color.lerp(onSuccess, other.onSuccess, t)!,
         warning: Color.lerp(warning, other.warning, t)!,
@@ -244,6 +254,8 @@ class BuzzChatTheme with ChangeNotifier {
   }
 
   static final lightPalette = BuzzChatPaletteExtension(
+      secondary: BuzzChatPalette.secondary.secondary500,
+      onSecondary: BuzzChatPalette.secondary.secondary900,
       warning: BuzzChatPalette.warning.warning500,
       onWarning: BuzzChatPalette.warning.warning900,
       success: BuzzChatPalette.success.success500,
@@ -269,6 +281,8 @@ class BuzzChatTheme with ChangeNotifier {
 
   static final light = ThemeData.light().copyWith(extensions: [lightPalette]);
   static final darkPalette = BuzzChatPaletteExtension(
+      secondary: BuzzChatPalette.secondary.secondary500,
+      onSecondary: BuzzChatPalette.secondary.secondary900,
       warning: BuzzChatPalette.warning.warning500,
       onWarning: BuzzChatPalette.warning.warning900,
       success: BuzzChatPalette.success.success500,
