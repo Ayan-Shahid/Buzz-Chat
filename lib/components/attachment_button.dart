@@ -1,7 +1,5 @@
-import 'dart:io';
-
 import 'package:buzzchat/main.dart';
-import 'package:buzzchat/screens/attachment/document.dart';
+import 'package:buzzchat/screens/attachment/document/browse.dart';
 import 'package:buzzchat/theme/theme.dart';
 import 'package:flutter/material.dart';
 
@@ -23,7 +21,7 @@ class _AttachmentButtonState extends State<AttachmentButton> {
         "background": palette.error,
         "foreground": palette.onError,
         "on-pressed": () => Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => Document()))
+            .push(MaterialPageRoute(builder: (context) => Browse()))
       },
       {
         "icon": Icons.camera_alt_rounded,

@@ -114,7 +114,9 @@ class BuzzChatPaletteExtension
       required this.warning,
       required this.onWarning,
       required this.secondary,
-      required this.onSecondary});
+      required this.onSecondary,
+      required this.primaryInverse,
+      required this.onPrimaryInverse});
   final Color background;
   final Color foreground;
   final Color containerVariant;
@@ -139,6 +141,8 @@ class BuzzChatPaletteExtension
   final Color secondary;
   final Color onSecondary;
   final Color onWarning;
+  final Color primaryInverse;
+  final Color onPrimaryInverse;
 
   @override
   ThemeExtension<BuzzChatPaletteExtension> copyWith(
@@ -166,8 +170,12 @@ class BuzzChatPaletteExtension
       Color? warning,
       Color? onWarning,
       Color? secondary,
-      Color? onSecondary}) {
+      Color? onSecondary,
+      Color? primaryInverse,
+      Color? onPrimaryInverse}) {
     return BuzzChatPaletteExtension(
+        primaryInverse: primaryInverse ?? this.primaryInverse,
+        onPrimaryInverse: onPrimaryInverse ?? this.onPrimaryInverse,
         secondary: secondary ?? this.secondary,
         onSecondary: onSecondary ?? this.onSecondary,
         success: success ?? this.success,
@@ -206,6 +214,9 @@ class BuzzChatPaletteExtension
       return this;
     }
     return BuzzChatPaletteExtension(
+        primaryInverse: Color.lerp(primaryInverse, other.primaryInverse, t)!,
+        onPrimaryInverse:
+            Color.lerp(onPrimaryInverse, other.onPrimaryInverse, t)!,
         secondary: Color.lerp(secondary, other.secondary, t)!,
         onSecondary: Color.lerp(onSecondary, other.onSecondary, t)!,
         success: Color.lerp(success, other.success, t)!,
@@ -254,6 +265,8 @@ class BuzzChatTheme with ChangeNotifier {
   }
 
   static final lightPalette = BuzzChatPaletteExtension(
+      primaryInverse: BuzzChatPalette.primary.primary800,
+      onPrimaryInverse: BuzzChatPalette.primary.primary100,
       secondary: BuzzChatPalette.secondary.secondary500,
       onSecondary: BuzzChatPalette.secondary.secondary900,
       warning: BuzzChatPalette.warning.warning500,
@@ -281,6 +294,8 @@ class BuzzChatTheme with ChangeNotifier {
 
   static final light = ThemeData.light().copyWith(extensions: [lightPalette]);
   static final darkPalette = BuzzChatPaletteExtension(
+      primaryInverse: BuzzChatPalette.primary.primary800,
+      onPrimaryInverse: BuzzChatPalette.primary.primary100,
       secondary: BuzzChatPalette.secondary.secondary500,
       onSecondary: BuzzChatPalette.secondary.secondary900,
       warning: BuzzChatPalette.warning.warning500,
