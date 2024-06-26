@@ -1,35 +1,32 @@
+import 'dart:io';
+
 import 'package:buzzchat/components/screens/attachment/gallery/edit_media/filter_matrix.dart';
+import 'package:buzzchat/screens/attachment/gallery/edit_media.dart';
 import 'package:buzzchat/theme/theme.dart';
 import 'package:flutter/material.dart';
 
 class FilterList extends StatefulWidget {
-  const FilterList({Key? key}) : super(key: key);
+  final String imagePath;
+  const FilterList({Key? key, required this.imagePath}) : super(key: key);
 
   @override
   _FilterListState createState() => _FilterListState();
 }
 
 class _FilterListState extends State<FilterList> {
-  int selected = 0;
-
-  void select(int index) {
-    setState(() {
-      selected = index;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     ThemeData theme = context.theme;
     BuzzChatPaletteExtension palette = context.theme.palette;
     double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
+    // double height = MediaQuery.of(context).size.height;
+    EditMediaInherited data = EditMediaInherited.of(context)!;
     return Container(
       width: width,
       clipBehavior: Clip.none,
       padding: EdgeInsets.symmetric(vertical: 12, horizontal: 12),
       height: 140,
-      color: palette.container,
+      color: BuzzChatPalette.grayscale.grayscale300,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: FilterMatrix.filters.length,
@@ -37,23 +34,36 @@ class _FilterListState extends State<FilterList> {
         shrinkWrap: true,
         itemBuilder: (context, index) => GestureDetector(
             onTap: () {
-              select(index);
+              data.selectFilter(index);
             },
             child: AnimatedScale(
-              alignment: Alignment.bottomCenter,
-              scale: selected == index ? 1.08 : 1,
-              duration: Duration(milliseconds: 200),
+              alignment: Alignment.topCenter,
+              scale: data.filter == index
+                  ? 0.6 + 0.4 * (1.08 - data.filterListPosition)
+                  : 0.6 + 0.4 * (1 - data.filterListPosition),
+              duration: Duration(
+                  milliseconds: data.filterListPosition == 0 ? 200 : 0),
               child: Container(
                 width: 80,
                 margin: EdgeInsets.only(left: index == 0 ? 0 : 8),
                 decoration: BoxDecoration(
-                    color: palette.inverseContainer,
-                    image: DecorationImage(
-                      image: NetworkImage(
-                          "https://images.unsplash.com/photo-1718703357732-8c7aef2b6b51?q=80&w=2574&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"),
-                    )),
+                  color: BuzzChatPalette.grayscale.grayscale300,
+                ),
                 child: Stack(
                   children: [
+                    Positioned.fill(
+                        child: FilterMatrix.filters[index].name == "None"
+                            ? Image.file(
+                                File(widget.imagePath),
+                                fit: BoxFit.cover,
+                              )
+                            : ColorFiltered(
+                                colorFilter: ColorFilter.matrix(
+                                    FilterMatrix.filters[index].matrix),
+                                child: Image.file(
+                                  File(widget.imagePath),
+                                  fit: BoxFit.cover,
+                                ))),
                     Positioned(
                       bottom: 0,
                       child: Container(
@@ -73,7 +83,7 @@ class _FilterListState extends State<FilterList> {
                         top: 4,
                         right: 4,
                         child: AnimatedScale(
-                          scale: selected == index ? 1 : 0,
+                          scale: data.filter == index ? 1 : 0,
                           duration: Duration(milliseconds: 140),
                           child: Icon(
                             Icons.check_circle_rounded,

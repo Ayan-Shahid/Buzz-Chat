@@ -1,4 +1,3 @@
-import 'package:buzzchat/screens/attachment/document/choose_contact.dart';
 import 'package:buzzchat/theme/theme.dart';
 import 'package:flutter/material.dart';
 
@@ -42,45 +41,43 @@ class _InputState extends State<Input> {
 
   @override
   Widget build(BuildContext context) {
-    BuzzChatPaletteExtension palette = context.theme.palette;
-
     return Container(
-      color: palette.background,
       margin: EdgeInsets.only(top: 48),
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: TextField(
         focusNode: focusNode,
         style: MaterialStateTextStyle.resolveWith((states) =>
             states.contains(MaterialState.focused)
-                ? TextStyle(color: palette.onPrimaryInverse)
-                : TextStyle(color: palette.foreground)),
-        cursorColor: palette.primary,
+                ? TextStyle(color: BuzzChatPalette.primary.primary900)
+                : TextStyle(color: BuzzChatPalette.grayscale.grayscale1000)),
+        cursorColor: BuzzChatPalette.primary.primary500,
         decoration: InputDecoration(
             hintStyle: MaterialStateTextStyle.resolveWith((states) =>
                 states.contains(MaterialState.focused)
-                    ? TextStyle(color: palette.inputFocusedHint)
-                    : TextStyle(color: palette.containerVariant)),
+                    ? TextStyle(color: BuzzChatPalette.primary.primary200)
+                    : TextStyle(color: BuzzChatPalette.grayscale.grayscale600)),
             border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(32),
                 borderSide: BorderSide.none),
             filled: true,
             focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(32),
-                borderSide: BorderSide(color: palette.primary)),
+                borderSide:
+                    BorderSide(color: BuzzChatPalette.primary.primary500)),
             contentPadding: EdgeInsets.symmetric(vertical: 16),
             fillColor: MaterialStateColor.resolveWith((states) =>
                 states.contains(MaterialState.focused)
-                    ? palette.primaryInputFocusedBackground
-                    : palette.container),
+                    ? BuzzChatPalette.primary.primary100
+                    : BuzzChatPalette.grayscale.grayscale400),
             hintText: "Add a caption...",
             suffixIconColor: MaterialStateColor.resolveWith((states) =>
                 states.contains(MaterialState.focused)
-                    ? palette.primary
-                    : palette.primaryInputHint),
+                    ? BuzzChatPalette.primary.primary500
+                    : BuzzChatPalette.grayscale.grayscale600),
             prefixIconColor: MaterialStateColor.resolveWith((states) =>
                 states.contains(MaterialState.focused)
-                    ? palette.primary
-                    : palette.primaryInputHint),
+                    ? BuzzChatPalette.primary.primary500
+                    : BuzzChatPalette.grayscale.grayscale600),
             suffixIcon: Container(
                 margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
                 child: IconButton(

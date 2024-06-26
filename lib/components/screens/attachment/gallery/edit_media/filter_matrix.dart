@@ -1,5 +1,6 @@
 abstract class FilterMatrix {
   static const List<FilterMatrixItem> filters = [
+    FilterMatrixItem(matrix: [], name: "None"),
     FilterMatrixItem(matrix: [
       0.2126,
       0.7152,

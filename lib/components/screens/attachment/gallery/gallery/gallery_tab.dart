@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:buzzchat/screens/attachment/gallery/folder.dart';
 import 'package:buzzchat/services/MediaService.dart';
 import 'package:buzzchat/theme/theme.dart';
@@ -37,8 +39,34 @@ class GalleryTab extends StatefulWidget {
 class _GalleryTabState extends State<GalleryTab> {
   final MediaService _mediaService = MediaService();
   late Future<List<MediaItem>> _mediaItems;
+  late Future<List<BuzzChatGalleryFolder>> _galleryFolders;
 
   late Future<List<BuzzChatGalleryFolder>> _folders;
+  Future<List<BuzzChatGalleryFolder>> getGalleryFolders() async {
+    List<MediaItem> media = await MediaService().getMediaItems();
+
+    List<String> mediaFolderNames = [];
+
+    for (MediaItem element in media) {
+      mediaFolderNames.add(element.category);
+    }
+    mediaFolderNames = mediaFolderNames.toSet().toList();
+
+    List<BuzzChatGalleryFolder> galleryFolders = [];
+
+    for (String element in mediaFolderNames) {
+      List<BuzzChatGalleyItem> items = [];
+      for (MediaItem galleryItem in media) {
+        if (galleryItem.category == element) {
+          print(galleryItem.path);
+          items.add(BuzzChatGalleyItem(
+              url: galleryItem.path, date: galleryItem.dateAdded));
+        }
+      }
+      galleryFolders.add(BuzzChatGalleryFolder(name: element, items: items));
+    }
+    return galleryFolders;
+  }
 
   Future<List<BuzzChatGalleryFolder>> _listFolders() async {
     FirebaseStorage storage = FirebaseStorage.instance;
@@ -64,8 +92,7 @@ class _GalleryTabState extends State<GalleryTab> {
   @override
   void initState() {
     super.initState();
-    _mediaItems = _mediaService.getMediaItems();
-    _folders = _listFolders();
+    _galleryFolders = getGalleryFolders();
   }
 
   @override
@@ -75,7 +102,7 @@ class _GalleryTabState extends State<GalleryTab> {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return FutureBuilder<List<BuzzChatGalleryFolder>>(
-        future: _folders,
+        future: _galleryFolders,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return SizedBox(
@@ -86,6 +113,8 @@ class _GalleryTabState extends State<GalleryTab> {
                 backgroundColor: palette.inverseContainer,
               )),
             );
+          } else if (snapshot.data == null || snapshot.data!.isEmpty) {
+            return Text("No Data");
           }
           return GridView.builder(
               scrollDirection: Axis.vertical,
@@ -108,8 +137,8 @@ class _GalleryTabState extends State<GalleryTab> {
                             color: palette.inverseContainer,
                             image: DecorationImage(
                                 fit: BoxFit.cover,
-                                image: NetworkImage(
-                                    snapshot.data![index].thumbNail))),
+                                image: FileImage(
+                                    File(snapshot.data![index].thumbNail)))),
                         child: Container(
                           decoration: BoxDecoration(
                               gradient: LinearGradient(

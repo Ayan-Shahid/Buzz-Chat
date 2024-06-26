@@ -9,6 +9,7 @@ struct MediaItem {
     let path: String
     let size: Int64
     let file: String
+    let dateAdded: Date // Include creation date
 }
 
 @UIApplicationMain
@@ -52,7 +53,8 @@ struct MediaItem {
                             "type": self.getFileType(from: asset.originalFilename),
                             "path": path,
                             "size": Int64(data.count),
-                            "file": "image"
+                            "file": "image",
+                            "dateAdded": asset.creationDate ?? Date()
                         ]
                         mediaItems.append(mediaItem)
                     }
@@ -68,7 +70,8 @@ struct MediaItem {
                                 "type": self.getFileType(from: asset.originalFilename),
                                 "path": path,
                                 "size": Int64(data.count),
-                                "file": "video"
+                                "file": "video",
+                                "dateAdded": asset.creationDate ?? Date()
                             ]
                             mediaItems.append(mediaItem)
                         }

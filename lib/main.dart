@@ -32,6 +32,7 @@ class MyApp extends StatelessWidget {
       builder: (context, child) => MaterialApp(
         title: 'Flutter Demo',
         theme: BuzzChatTheme.light,
+        debugShowCheckedModeBanner: false,
         darkTheme: BuzzChatTheme.dark,
         themeMode: context.watch<BuzzChatTheme>().themeMode,
         home: const Chat(),

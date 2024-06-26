@@ -3,7 +3,11 @@ import 'package:buzzchat/theme/theme.dart';
 import 'package:flutter/material.dart';
 
 class Footer extends StatelessWidget {
-  const Footer({Key? key}) : super(key: key);
+  final Color? backgroundColor;
+  final Color? tagColor;
+  final TextStyle? textStyle;
+  const Footer({Key? key, this.backgroundColor, this.tagColor, this.textStyle})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +16,8 @@ class Footer extends StatelessWidget {
     ThemeData theme = context.theme;
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      color: palette.inverseContainer,
+      color: backgroundColor ?? palette.inverseContainer,
+      width: size.width,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -32,13 +37,14 @@ class Footer extends StatelessWidget {
                   },
                   label: Text(
                     "hasan",
-                    style: TextStyle(
-                        fontSize: theme.textTheme.labelLarge?.fontSize),
+                    style: textStyle ??
+                        TextStyle(
+                            fontSize: theme.textTheme.labelLarge?.fontSize),
                   ),
                   elevation: 0.0,
-                  shape: StadiumBorder(side: BorderSide.none),
-                  side: BorderSide.none,
-                  backgroundColor: palette.container,
+                  shape: StadiumBorder(),
+                  side: BorderSide(width: 0.0),
+                  backgroundColor: tagColor ?? palette.container,
                 ),
               ),
             ),

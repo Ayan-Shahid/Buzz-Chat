@@ -7,6 +7,7 @@ class MediaItem {
   final String path;
   final int size;
   final String file;
+  final DateTime dateAdded;
 
   MediaItem({
     required this.name,
@@ -15,6 +16,7 @@ class MediaItem {
     required this.path,
     required this.size,
     required this.file,
+    required this.dateAdded,
   });
 
   factory MediaItem.fromMap(Map<String, dynamic> map) {
@@ -25,6 +27,7 @@ class MediaItem {
       path: map['path'],
       size: map['size'],
       file: map['file'],
+      dateAdded: DateTime.fromMillisecondsSinceEpoch(map['dateAdded']),
     );
   }
 }
@@ -33,10 +36,15 @@ class MediaService {
   static const platform = MethodChannel('com.example.photo_gallery/media');
 
   Future<List<MediaItem>> getMediaItems() async {
-    final List<dynamic> mediaItems =
-        await platform.invokeMethod('getMediaItems');
-    return mediaItems
-        .map((item) => MediaItem.fromMap(Map<String, dynamic>.from(item)))
-        .toList();
+    try {
+      final List<dynamic> mediaItems =
+          await platform.invokeMethod('getMediaItems');
+
+      return mediaItems.map((item) {
+        return MediaItem.fromMap(Map<String, dynamic>.from(item));
+      }).toList();
+    } catch (e) {
+      throw e;
+    }
   }
 }

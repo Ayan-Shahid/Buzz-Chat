@@ -1,3 +1,4 @@
+import 'package:buzzchat/screens/attachment/gallery/folder.dart';
 import 'package:buzzchat/theme/theme.dart';
 import 'package:flutter/material.dart';
 
@@ -10,19 +11,29 @@ class Header extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     BuzzChatPaletteExtension palette = context.theme.palette;
     ThemeData theme = context.theme;
+    FolderInherited? data = FolderInherited.of(context);
     return AppBar(
+      leadingWidth: data?.selectMultiple == false ? 32 : null,
       backgroundColor: palette.container,
       shape:
           Border(bottom: BorderSide(color: palette.inverseContainer, width: 1)),
       centerTitle: false,
       actions: [
-        IconButton(
-            onPressed: () {},
-            icon: Icon(Icons.check_box_outlined),
-            color: palette.foreground)
+        Visibility(
+            visible: data?.selectMultiple == false,
+            child: IconButton(
+                onPressed: () {
+                  data?.toggleSelectMultiple();
+                },
+                icon: Icon(Icons.check_box_outlined),
+                color: palette.foreground))
       ],
       title: Text(
-        title,
+        data?.selectMultiple == false
+            ? title
+            : data?.selected.isEmpty == true
+                ? "Tap photo to select"
+                : "${data?.selected.length} Selected",
         style: TextStyle(
             fontSize: theme.textTheme.titleLarge?.fontSize,
             fontWeight: FontWeight.w500,
@@ -30,7 +41,9 @@ class Header extends StatelessWidget implements PreferredSizeWidget {
       ),
       leading: IconButton(
           onPressed: () {
-            Navigator.of(context).pop();
+            data?.selectMultiple == true
+                ? data?.toggleSelectMultiple()
+                : Navigator.of(context).pop();
           },
           icon: Icon(Icons.arrow_back_rounded)),
       flexibleSpace: Container(
